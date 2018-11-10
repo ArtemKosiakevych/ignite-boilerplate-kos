@@ -1,5 +1,3 @@
-<p align="center"><img src="http://ir_public.s3.amazonaws.com/projects/ignite/ignite-andross-launch-screen.png" alt="logo" width="414px"></p>
-
 # Ignite Boilerplate ("Kos", based on ["Andross"](https://github.com/infinitered/ignite-ir-boilerplate-andross))
 
 ## The tried and true boilerplate for [Infinite Red](https://infinite.red) opinions
