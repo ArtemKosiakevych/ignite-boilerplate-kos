@@ -40,6 +40,15 @@ To generate a new Component you can use the following generator commands:
 * `ignite g component --folder path` - An alternative to `ignite g component path/index`
 * `ignite g component --folder path new ` - An alternative to `ignite g component relativePath/New`
 
+### Redux, Sagas
+
+Contains a preconfigured Redux and Redux-Sagas setup. Review each file carefully to see how Redux interacts with your application.
+
+Here again we have generators to help you out. You just have to use one of the following:
+
+* `ignite g redux Amazing` - Will generate and link the redux for `Amazing`.
+* `ignite g saga Amazing` - The same as above, but for the Sagas
+
 ## :no_entry_sign: Standard Compliant
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)

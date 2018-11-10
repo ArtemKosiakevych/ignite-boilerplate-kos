@@ -1,10 +1,10 @@
 {
-  "name": "ignite-ir-boilerplate-andross",
-  "description": "Infinite Red's hot boilerplate for React Native.",
+  "name": "ignite-boilerplate-kos",
+  "description": "Boilerplate for React Native.",
   "license": "MIT",
-  "repository": "infinitered/ignite-ir-boilerplate-andross",
-  "homepage": "https://github.com/infinitered/ignite-ir-boilerplate-andross",
-  "version": "2.3.3",
+  "repository": "ArtemKosiakevych/ignite-boilerplate-kos",
+  "homepage": "https://github.com/ArtemKosiakevych/ignite-boilerplate-kos",
+  "version": "0.0.1",
   "files": [
     "boilerplate",
     "commands",
@@ -17,9 +17,9 @@
     "readme.md"
   ],
   "author": {
-    "name": "Infinite Red",
-    "email": "npm@infinite.red",
-    "url": "https://github.com/infinitered/ignite-ir-boilerplate-andross"
+    "name": "Artem Kosiakevych",
+    "email": "artem.kosiakevych@gmail.com",
+    "url": "https://github.com/ArtemKosiakevych/ignite-boilerplate-kos"
   },
   "scripts": {
     "lint": "standard",
