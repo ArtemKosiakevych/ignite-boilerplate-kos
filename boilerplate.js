@@ -184,7 +184,7 @@ async function install (context) {
     }
 
     if (answers['i18n'] === 'react-native-i18n') {
-      await system.spawn(`ignite add i18n@"~>1.0.0" ${debugFlag}`, { stdio: 'inherit' })
+      await system.spawn(`ignite add i18n@"~>2.0.15" ${debugFlag}`, { stdio: 'inherit' })
     }
 
     if (answers['animatable'] === 'react-native-animatable') {
