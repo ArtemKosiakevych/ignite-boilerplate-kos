@@ -18,7 +18,7 @@ Currently includes:
 When you've installed the [Ignite CLI](https://github.com/infinitered/ignite), you can get started with this boilerplate like this:
 
 ```
-ignite new MyLatestCreation
+ignite new MyLatestCreation -b ignite-kos-boilerplate
 ```
 
 You can also change the React Native version, just keep in mind, we may not have tested this just yet.
