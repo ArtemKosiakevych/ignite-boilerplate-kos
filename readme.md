@@ -18,25 +18,7 @@ Currently includes:
 When you've installed the [Ignite CLI](https://github.com/infinitered/ignite), you can get started with this boilerplate like this:
 
 ```
-ignite new MyLatestCreation -b ignite-kos-boilerplate
-```
-
-You can also change the React Native version, just keep in mind, we may not have tested this just yet.
-
-```sh
-ignite new MyLatestCreation --react-native-version 0.46.0-rc.2
-```
-
-By default we'll ask you some questions during install as to which features you'd like.  If you just want them all, you can skip the questions:
-
-```sh
-ignite new MyLatestCreation --max
-```
-
-If you want very few of these extras:
-
-```sh
-ignite new MyLatestCreation --min
+ignite new App -b ignite-kos-boilerplate
 ```
 
 ## Boilerplate walkthrough
