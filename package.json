@@ -4,7 +4,7 @@
   "license": "MIT",
   "repository": "ArtemKosiakevych/ignite-boilerplate-kos",
   "homepage": "https://github.com/ArtemKosiakevych/ignite-boilerplate-kos",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "files": [
     "boilerplate",
     "commands",
