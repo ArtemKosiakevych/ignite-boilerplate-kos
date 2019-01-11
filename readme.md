@@ -18,7 +18,7 @@ Currently includes:
 When you've installed the [Ignite CLI](https://github.com/infinitered/ignite), you can get started with this boilerplate like this:
 
 ```
-ignite new App -b ignite-kos-boilerplate
+ignite new App -b ignite-boilerplate-kos
 ```
 
 ## Boilerplate walkthrough
