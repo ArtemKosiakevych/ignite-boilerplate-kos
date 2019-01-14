@@ -4,7 +4,7 @@
 
 Currently includes:
 
-* React Native 0.55.1 (but you can change this if you want to experiment)
+* React Native 0.57.7 (but you can change this if you want to experiment)
 * React Navigation
 * Redux
 * Redux Sagas

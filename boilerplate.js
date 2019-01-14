@@ -41,7 +41,7 @@ async function install (context) {
 
   const name = parameters.third
   const spinner = print
-    .spin(`using the ${yellow('Kos')} boilerplate`)
+  .spin(`using the ${yellow('Kos')} boilerplate`)
     .succeed()
 
   // attempt to install React Native or die trying
@@ -108,7 +108,7 @@ async function install (context) {
    * Append to files
    */
   // https://github.com/facebook/react-native/issues/12724
-  filesystem.appendAsync('.gitattributes', '*.bat text eol=crlf')
+  await filesystem.appendAsync('.gitattributes', '*.bat text eol=crlf')
   filesystem.append('.gitignore', '\n# Misc\n#')
   filesystem.append('.gitignore', '\n.env\n')
 
@@ -166,17 +166,34 @@ async function install (context) {
   try {
     // boilerplate adds itself to get plugin.js/generators etc
     // Could be directory, npm@version, or just npm name.  Default to passed in values
-    const boilerplate = parameters.options.b || parameters.options.boilerplate || 'ignite-ir-boilerplate-andross'
+    const boilerplate = parameters.options.b || parameters.options.boilerplate || 'ignite-andross'
 
     await system.spawn(`ignite add ${boilerplate} ${debugFlag}`, { stdio: 'inherit' })
 
     // now run install of Ignite Plugins
-    if (answers['dev-screens'] === 'Yes') {
-      await system.spawn(`ignite add dev-screens@"~>2.2.0" ${debugFlag}`, {
-        stdio: 'inherit'
-      })
-    }
+    await ignite.addModule('react-navigation', { version: '3.0.0' })
+    await ignite.addModule('react-native-gesture-handler', { version: '1.0.9', link: true })
 
+    ignite.patchInFile(`${process.cwd()}/android/app/src/main/java/com/${name.toLowerCase()}/MainActivity.java`, {
+      after: 'import com.facebook.react.ReactActivity;',
+      insert: `
+      import com.facebook.react.ReactActivityDelegate;
+      import com.facebook.react.ReactRootView;
+      import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;`
+    })
+
+    ignite.patchInFile(`${process.cwd()}/android/app/src/main/java/com/${name.toLowerCase()}/MainActivity.java`, {
+      after: `public class MainActivity extends ReactActivity {`,
+      insert: '\n  @Override\n' +
+      '  protected ReactActivityDelegate createReactActivityDelegate() {\n' +
+      '    return new ReactActivityDelegate(this, getMainComponentName()) {\n' +
+      '      @Override\n' +
+      '      protected ReactRootView createRootView() {\n' +
+      '       return new RNGestureHandlerEnabledRootView(MainActivity.this);\n' +
+      '      }\n' +
+      '    };\n' +
+      '  }'
+    })
     if (answers['vector-icons'] === 'react-native-vector-icons') {
       await system.spawn(`ignite add vector-icons@"~>1.0.0" ${debugFlag}`, {
         stdio: 'inherit'
@@ -193,8 +210,16 @@ async function install (context) {
       })
     }
 
+    // dev-screens be installed after vector-icons and animatable so that it can
+    // conditionally patch its PluginExamplesScreen
+    if (answers['dev-screens'] === 'Yes') {
+      await system.spawn(`ignite add dev-screens@"~>2.3.0" ${debugFlag}`, {
+        stdio: 'inherit'
+      })
+    }
+
     if (answers['redux-persist'] === 'Yes') {
-      await system.spawn(`ignite add redux-persist@"~>1.0.1" ${debugFlag}`, {
+      await system.spawn(`ignite add redux-persist@"~>5.10.0" ${debugFlag}`, {
         stdio: 'inherit'
       })
     }
@@ -217,7 +242,7 @@ async function install (context) {
 
     // TODO: Make husky hooks optional
     const huskyCmd = '' // `&& node node_modules/husky/bin/install .`
-    system.run(`git init . && git add . && git commit -m "Initial commit." ${huskyCmd}`)
+    await system.run(`git init . && git add . && git commit -m "Initial commit." ${huskyCmd}`)
 
     spinner.succeed(`configured git`)
   }
@@ -238,7 +263,7 @@ async function install (context) {
       react-native run-android${androidInfo}
       ignite --help
 
-    ${gray('Read the walkthrough at https://github.com/infinitered/ignite-ir-boilerplate-andross/blob/master/readme.md#boilerplate-walkthrough')}
+    ${gray('Read the walkthrough at https://github.com/infinitered/ignite-andross/blob/master/readme.md#boilerplate-walkthrough')}
 
     ${blue('Need additional help? Join our Slack community at http://community.infinite.red.')}
 

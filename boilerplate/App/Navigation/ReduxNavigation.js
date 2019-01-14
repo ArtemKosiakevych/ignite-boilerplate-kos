@@ -1,21 +1,26 @@
-import React from 'react'
+import * as React from 'react'
 import { BackHandler, Platform } from 'react-native'
-import { addNavigationHelpers } from 'react-navigation'
-import { createReduxBoundAddListener } from 'react-navigation-redux-helpers'
+import {
+  createReactNavigationReduxMiddleware,
+  reduxifyNavigator
+} from 'react-navigation-redux-helpers'
 import { connect } from 'react-redux'
 import AppNavigation from './AppNavigation'
 
+createReactNavigationReduxMiddleware(
+  'root',
+  (state) => state.nav
+)
+
+const ReduxAppNavigator = reduxifyNavigator(AppNavigation, 'root')
+
 class ReduxNavigation extends React.Component {
-  // eslint-disable-next-line
-  componentWillMount() {
+  componentDidMount () {
     if (Platform.OS === 'ios') return
     BackHandler.addEventListener('hardwareBackPress', () => {
       const { dispatch, nav } = this.props
       // change to whatever is your first screen, otherwise unpredictable results may occur
-      if (
-        nav.routes.length === 1 &&
-        nav.routes[0].routeName === 'LaunchScreen'
-      ) {
+      if (nav.routes.length === 1 && (nav.routes[0].routeName === 'LaunchScreen')) {
         return false
       }
       // if (shouldCloseApp(nav)) return false
@@ -24,23 +29,17 @@ class ReduxNavigation extends React.Component {
     })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     if (Platform.OS === 'ios') return
-    BackHandler.removeEventListener('hardwareBackPress')
+    BackHandler.removeEventListener('hardwareBackPress', undefined)
   }
 
-  render() {
-    return (
-      <AppNavigation
-        navigation={addNavigationHelpers({
-          dispatch: this.props.dispatch,
-          state: this.props.nav,
-          addListener: createReduxBoundAddListener('root'),
-        })}
-      />
-    )
+  render () {
+    return <ReduxAppNavigator dispatch={this.props.dispatch} state={this.props.nav} />
   }
 }
 
-const mapStateToProps = state => ({ nav: state.nav })
+const mapStateToProps = state => ({
+  nav: state.nav
+})
 export default connect(mapStateToProps)(ReduxNavigation)
