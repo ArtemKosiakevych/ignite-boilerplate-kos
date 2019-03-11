@@ -171,29 +171,88 @@ async function install (context) {
     await system.spawn(`ignite add ${boilerplate} ${debugFlag}`, { stdio: 'inherit' })
 
     // now run install of Ignite Plugins
-    await ignite.addModule('react-navigation', { version: '3.0.0' })
-    await ignite.addModule('react-native-gesture-handler', { version: '1.0.9', link: true })
+    await ignite.addModule('react-native-navigation', { version: '2.13.1', link: true })      
+        
+    filesystem.copy(`${__dirname}/boilerplate/ios`, `${process.cwd()}/ios/${name.toLowerCase()}`, {
+      overwrite: true,
+      matching: '!*.ejs'
+    })
+    const APP_PATH = process.cwd()
 
-    ignite.patchInFile(`${process.cwd()}/android/app/src/main/java/com/${name.toLowerCase()}/MainActivity.java`, {
-      after: 'import com.facebook.react.ReactActivity;',
+    // Linking navigation Android
+    ignite.patchInFile(`${APP_PATH}/android/settings.gradle`, {
+      insert: `include ':react-native-navigation'
+project(':react-native-navigation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-navigation/lib/android/app/')`,
+      before: `include ':app'`
+    })
+
+    ignite.patchInFile(`${APP_PATH}/android/app/build.gradle`, {
+      insert: `    implementation project(':react-native-navigation')`,
+      after: `dependencies {`
+    })
+
+    ignite.patchInFile(`${APP_PATH}/android/app/build.gradle`, {
       insert: `
-      import com.facebook.react.ReactActivityDelegate;
-      import com.facebook.react.ReactRootView;
-      import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;`
+    compileOptions {
+      sourceCompatibility JavaVersion.VERSION_1_8
+      targetCompatibility JavaVersion.VERSION_1_8
+    }`,
+      after: 'buildToolsVersion rootProject.ext.buildToolsVersion'
     })
 
-    ignite.patchInFile(`${process.cwd()}/android/app/src/main/java/com/${name.toLowerCase()}/MainActivity.java`, {
-      after: `public class MainActivity extends ReactActivity {`,
-      insert: '\n  @Override\n' +
-      '  protected ReactActivityDelegate createReactActivityDelegate() {\n' +
-      '    return new ReactActivityDelegate(this, getMainComponentName()) {\n' +
-      '      @Override\n' +
-      '      protected ReactRootView createRootView() {\n' +
-      '       return new RNGestureHandlerEnabledRootView(MainActivity.this);\n' +
-      '      }\n' +
-      '    };\n' +
-      '  }'
+    ignite.patchInFile(`${APP_PATH}/android/app/build.gradle`, {
+      insert: `        missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"`,
+      after: 'defaultConfig {'
     })
+
+    ignite.patchInFile(`${APP_PATH}/android/app/build.gradle`, {
+      insert: `    implementation 'com.android.support:design:27.1.0'`,
+      after: 'dependencies {'
+    })
+
+    filesystem.copy(`${__dirname}/boilerplate/android`, `${APP_PATH}/android/app/src/main/java/com/${name.toLowerCase()}`, {
+      overwrite: true,
+      matching: '*.java'
+    })
+
+    ignite.patchInFile(`${APP_PATH}/android/app/src/main/java/com/${name.toLowerCase()}/MainActivity.java`, {
+      insert: `package com.${name.toLowerCase()};`,
+      before: 'import com.reactnativenavigation.NavigationActivity;'
+    })
+
+    ignite.patchInFile(`${APP_PATH}/android/app/src/main/java/com/${name.toLowerCase()}/MainApplication.java`, {
+      insert: `package com.${name.toLowerCase()};`,
+      before: 'import android.app.Application;'
+    })
+    
+    ignite.patchInFile(`${APP_PATH}/android/build.gradle`, {
+      insert: `        mavenLocal()
+        mavenCentral()`,
+      before: `jcenter()`
+    })
+    ignite.patchInFile(`${APP_PATH}/android/build.gradle`, {
+      insert: `   mavenCentral()
+        maven { url 'https://jitpack.io' }`,
+      before: 'maven {'
+    })
+    ignite.patchInFile(`${APP_PATH}/android/build.gradle`, {
+      insert: `   minSdkVersion = 19`,
+      before: 'minSdkVersion = 16'
+    })
+    ignite.patchInFile(`${APP_PATH}/android/build.gradle`, {
+      delete: 'minSdkVersion = 16'
+    })
+
+    filesystem.copy(`${__dirname}/boilerplate/android`, `${APP_PATH}/android`, {
+      overwrite: true,
+      matching: '*.gradle'
+    })
+
+    filesystem.copy(`${__dirname}/boilerplate/android`, `${APP_PATH}/android/gradle/wrapper`, {
+      overwrite: true,
+      matching: '*.properties'
+    })
+
     if (answers['vector-icons'] === 'react-native-vector-icons') {
       await system.spawn(`ignite add vector-icons@"~>1.0.0" ${debugFlag}`, {
         stdio: 'inherit'
@@ -218,11 +277,9 @@ async function install (context) {
       })
     }
 
-    if (answers['redux-persist'] === 'Yes') {
-      await system.spawn(`ignite add redux-persist@"~>5.10.0" ${debugFlag}`, {
-        stdio: 'inherit'
-      })
-    }
+    await system.spawn(`ignite add redux-persist@"~>5.10.0" ${debugFlag}`, {
+      stdio: 'inherit'
+    })
 
     if (parameters.options.lint !== 'false') {
       await system.spawn(`ignite add standard@"~>1.0.0" ${debugFlag}`, {

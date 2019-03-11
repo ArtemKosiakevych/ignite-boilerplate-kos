@@ -22,6 +22,29 @@
     * Run Genymotion
     * run `react-native run-android`
 
+### Navigation
+For navigating use methods from `App/Navigation/index`
+
+```js
+import { push } from '../Navigation'
+...
+componentDidMount() {
+  push(this.props.componentId, 'YOUR_ROUTE', {
+      title: 'Title',
+      passProps: {
+        customProps: true
+      },
+    })
+}
+```
+
+or 
+```js
+import { replaceStack } from '../Navigation'
+...
+replaceStack('main')
+```
+
 ### Containers
 
 To generate a new Container or Screen you can use the following generator commands:

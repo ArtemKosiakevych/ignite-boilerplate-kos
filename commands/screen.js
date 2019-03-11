@@ -36,9 +36,9 @@ module.exports = async function (context) {
   // if using `react-navigation` go the extra step
   // and insert the screen into the nav router
   if (config.navigation === 'react-navigation') {
-    const appNavFilePath = `${process.cwd()}/App/Navigation/AppNavigation.js`
+    const appNavFilePath = `${process.cwd()}/App/Navigation/screens.js`
     const importToAdd = `import ${screenName} from '../Containers/${screenName}'`
-    const routeToAdd = `    ${screenName}: { screen: ${screenName} },`
+    const routeToAdd = `  ${name}: ${screenName},`
 
     if (!filesystem.exists(appNavFilePath)) {
       const msg = `No '${appNavFilePath}' file found.  Can't insert screen.`
